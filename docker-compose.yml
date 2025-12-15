@@ -8,7 +8,7 @@ services:
     container_name: notes-backend
     volumes:
       - ./backend:/var/www/html
-    command: php-fpm
+    # Eliminamos 'command' explícito porque el Dockerfile ya tiene CMD ["php-fpm"]
 
   nginx:
     image: nginx:alpine
@@ -27,7 +27,9 @@ services:
     working_dir: /app
     volumes:
       - ./frontend:/app
-    command: sh -c "if [ -d node_modules ]; then ./node_modules/.bin/vite --host 0.0.0.0; else echo 'Waiting for setup...'; tail -f /dev/null; fi"
+    # Simplemente ejecutamos el dev server exponiendo el host.
+    # Si falla, es porque el usuario debe ejecutar npm install primero.
+    command: npm run dev -- --host
     ports:
       - "5173:5173"
     environment:
