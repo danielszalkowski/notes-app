@@ -21,7 +21,8 @@ RUN if [ ${UID:-0} -ne 0 ] && [ ${GID:-0} -ne 0 ]; then \
 fi
 
 COPY entrypoint.sh /entrypoint.sh
-RUN chmod +x /entrypoint.sh
+RUN sed -i 's/\r$//' /entrypoint.sh \
+ && chmod +x /entrypoint.sh
 
 WORKDIR /var/www/html
 RUN chown -R www-data:www-data /var/www/html
