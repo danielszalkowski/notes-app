@@ -64,7 +64,7 @@ git clone <repo-url>
 cd notes-app
 ```
 
-### 1️⃣ Crear el archivo de entorno del backend
+### 2️⃣ Crear el archivo de entorno del backend
 
 ```bash
 cp backend/.env.example backend/.env
