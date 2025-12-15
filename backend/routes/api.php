@@ -14,9 +14,3 @@ Route::get('/health', function () {
 });
 
 Route::apiResource('notes', NoteController::class);
-
-// Route::get('/notes', [ApiNoteController::class, 'index']);
-// Route::post('/notes', [ApiNoteController::class, 'store']);
-// Route::get('/notes/{id}', [ApiNoteController::class, 'show']);
-// Route::put('/notes/{id}', [ApiNoteController::class, 'update']);
-// Route::delete('/notes/{id}', [ApiNoteController::class, 'destroy']);

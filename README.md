@@ -112,6 +112,7 @@ http://localhost:5173
 
 ### API Backend:
 http://localhost/api/notes
+http://localhost/api/health
 
 ## 🧪 Tests
 ### Frontend:
