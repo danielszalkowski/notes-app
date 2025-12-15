@@ -118,7 +118,7 @@ http://localhost/api/health
 ### Frontend:
 
 ```bash
-docker compose exec frontend npm test
+docker compose exec frontend npm run test
 ```
 
 ### API Backend:

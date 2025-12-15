@@ -37,7 +37,7 @@ const NoteForm = () => {
     setMessage('');
     
     if (!formData.title.trim()) {
-      setMessage('El título es obligatorio, ¡no seas vago!');
+      setMessage('El título es obligatorio');
       setLoading(false);
       return;
     }
@@ -57,7 +57,7 @@ const NoteForm = () => {
         if (err.response && err.response.status === 422) {
             setMessage('Error de validación: El título es obligatorio.');
         } else {
-            setMessage('Fallo en la conexión o el backend está KO.');
+            setMessage('Fallo en la conexión o el backend no funciona correctamente.');
         }
       console.error(err);
     } finally {
