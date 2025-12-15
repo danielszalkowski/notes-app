@@ -87,7 +87,7 @@ New-Item -Path "./database/database.sqlite" -ItemType File
 ### 4️⃣ Levantar los contenedores
 
 ```bash
-New-Item -Path "./database/database.sqlite" -ItemType File
+docker compose up --build
 ```
 
 ### 5️⃣ Instalar dependencias del backend
