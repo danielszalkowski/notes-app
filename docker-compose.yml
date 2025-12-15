@@ -27,7 +27,7 @@ services:
     working_dir: /app
     volumes:
       - ./frontend:/app
-    command: ./node_modules/.bin/vite --host 0.0.0.0
+    command: sh -c "if [ -d node_modules ]; then ./node_modules/.bin/vite --host 0.0.0.0; else echo 'Waiting for setup...'; tail -f /dev/null; fi"
     ports:
       - "5173:5173"
     environment:
