@@ -35,8 +35,9 @@ echo -e "${BLUE}🐘 Instalando dependencias de Backend (Composer)...${NC}"
 docker-compose exec -u www-data backend composer install
 
 echo -e "${BLUE}⚛️  Instalando dependencias de Frontend (NPM)...${NC}"
-# Usamos 'run --rm' para levantar un contenedor temporal solo para instalar
-docker-compose run --rm frontend npm install
+# Usamos EXEC para instalar DENTRO del contenedor 'notes-frontend' que está en tail -f /dev/null
+# Nota: Quitamos el --rm y el 'run' porque el contenedor ya existe y está vivo
+docker-compose exec frontend npm install
 
 # 4. CONFIGURACIÓN DE LARAVEL DENTRO DEL CONTENEDOR
 echo -e "${BLUE}🔑 Generando App Key (si es la primera vez)...${NC}"
@@ -45,6 +46,16 @@ docker-compose exec -u www-data backend php artisan key:generate
 
 echo -e "${BLUE}💿 Migrando y preparando la base de datos...${NC}"
 docker-compose exec -u www-data backend php artisan migrate:fresh --seed --force
+
+# 💥 NUEVO PASO CRÍTICO: Ejecutar el comando de arranque del frontend.
+# Ahora que node_modules existe, matamos el 'tail -f /dev/null' y lanzamos Vite.
+# Usamos un 'exec' simple, y luego otro 'exec' para el comando principal,
+# para evitar el 'restart' y el 'sh -c'
+echo -e "${BLUE}▶️ Iniciando servidor de desarrollo Vite...${NC}"
+# Este comando hace dos cosas:
+# 1. Encuentra el PID del proceso 'tail' (el que lo mantenía vivo)
+# 2. Lo mata, lo que hace que el command original del docker-compose muera.
+docker-compose exec frontend sh -c "pkill tail"
 
 echo -e "${GREEN}✨ ¡Setup completo, tete! ¡A darle caña!${NC}"
 echo -e "${GREEN}🌍 Backend (API) listo en http://localhost:8000 ${NC}"
