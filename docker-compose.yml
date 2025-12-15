@@ -1,13 +1,13 @@
-version: "3.9"
-
 services:
   backend:
     build:
       context: ./docker/php
+      args:
+        UID: ${UID:-1000}
+        GID: ${GID:-1000}
     container_name: notes-backend
     volumes:
       - ./backend:/var/www/html
-    working_dir: /var/www/html
     command: php-fpm
 
   nginx:
@@ -27,7 +27,9 @@ services:
     working_dir: /app
     volumes:
       - ./frontend:/app
-      - /app/node_modules
-    command: sh -c "npm install && npm run dev -- --host"
+      - /app/node_modules 
+    command: npm run dev -- --host
     ports:
       - "5173:5173"
+    environment:
+      - CHOKIDAR_USEPOLLING=true
