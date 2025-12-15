@@ -44,7 +44,7 @@ echo -e "${BLUE}🔑 Generando App Key (si es la primera vez)...${NC}"
 docker-compose exec -u www-data backend php artisan key:generate
 
 echo -e "${BLUE}💿 Migrando y preparando la base de datos...${NC}"
-docker-compose exec -u www-data backend php artisan migrate --seed --force
+docker-compose exec -u www-data backend php artisan migrate:fresh --seed --force
 
 echo -e "${GREEN}✨ ¡Setup completo, tete! ¡A darle caña!${NC}"
 echo -e "${GREEN}🌍 Backend (API) listo en http://localhost:8000 ${NC}"
