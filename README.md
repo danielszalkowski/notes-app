@@ -85,6 +85,7 @@ New-Item -Path "./database/database.sqlite" -ItemType File
 ```
 
 ### 4️⃣ Levantar los contenedores
+> ⚠️ En Windows, asegúrate de que **Docker Desktop** esté ejecutándose antes de usar cualquier comando `docker compose`.
 
 ```bash
 docker compose up --build
