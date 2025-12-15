@@ -5,7 +5,8 @@ GREEN='\033[0;32m'
 BLUE='\033[0;34m'
 NC='\033[0m' # No Color
 
-echo -e "${BLUE}🚀 Arrancando motores y preparando entorno, nano...${NC}"
+echo -e "${BLUE}🚀 Preparando entorno y compilando dependencias, nano...${NC}"
+# --- NOTA: NO HACEMOS 'docker-compose up' AQUÍ ---
 
 # 1. GENERACIÓN DE ARCHIVOS CRÍTICOS (PORTABILIDAD)
 echo -e "${BLUE}⚙️  Verificando archivos de configuración y base de datos...${NC}"
@@ -19,44 +20,31 @@ fi
 # 1.2 Crear el archivo SQLite si no existe
 if [ ! -f ./backend/database/database.sqlite ]; then
     echo -e "${GREEN}-> Creando archivo SQLite vacío...${NC}"
+    # Crear el directorio si no existe (por si acaso)
+    mkdir -p ./backend/database
     touch ./backend/database/database.sqlite
-    # Aseguramos que los permisos sean correctos desde el host/WSL
+    # Aseguramos que los permisos sean correctos
     chmod 664 ./backend/database/database.sqlite
 fi
 
-# 2. Levantar contenedores (con build por si acaso)
-docker-compose up -d --build
+# 2. INSTALACIÓN DE DEPENDENCIAS (Usamos 'run --rm' para contenedores temporales de trabajo)
 
-echo -e "${GREEN}✅ Contenedores levantados.${NC}"
+# 2.1 Backend (PHP y configuración inicial)
+echo -e "${BLUE}🐘 Instalando dependencias de Backend (Composer) y preparando Laravel...${NC}"
+# Usamos 'run --rm' para un contenedor temporal. El build de PHP se ejecuta si no existe.
+docker-compose run --rm backend composer install
+docker-compose run --rm backend php artisan key:generate
+docker-compose run --rm backend php artisan migrate:fresh --seed --force
 
-# 3. Instalación de dependencias (PHP y NPM)
-echo -e "${BLUE}🐘 Instalando dependencias de Backend (Composer)...${NC}"
-# Ejecutamos el install dentro del contenedor backend
-docker-compose exec -u www-data backend composer install
+# 2.2 Frontend (NPM y Compilación/Build)
+echo -e "${BLUE}⚛️  Instalando dependencias de Frontend (NPM) y compilando...${NC}"
+# Instalación de módulos
+docker-compose run --rm frontend npm install
 
-echo -e "${BLUE}⚛️  Instalando dependencias de Frontend (NPM)...${NC}"
-# Usamos EXEC para instalar DENTRO del contenedor 'notes-frontend' que está en tail -f /dev/null
-# Nota: Quitamos el --rm y el 'run' porque el contenedor ya existe y está vivo
-docker-compose exec frontend npm install
+# Compilación de recursos (genera el build final en la carpeta /dist)
+echo -e "${BLUE}🏗️  Generando build de producción de React...${NC}"
+docker-compose run --rm frontend npm run build
+# NOTA: Asegúrate de que tu .env en backend esté configurado para buscar el 'build'
 
-# 4. CONFIGURACIÓN DE LARAVEL DENTRO DEL CONTENEDOR
-echo -e "${BLUE}🔑 Generando App Key (si es la primera vez)...${NC}"
-# Usamos 'exec -u www-data' para que los permisos de cache/log sean correctos
-docker-compose exec -u www-data backend php artisan key:generate
-
-echo -e "${BLUE}💿 Migrando y preparando la base de datos...${NC}"
-docker-compose exec -u www-data backend php artisan migrate:fresh --seed --force
-
-# 💥 NUEVO PASO CRÍTICO: Ejecutar el comando de arranque del frontend.
-# Ahora que node_modules existe, matamos el 'tail -f /dev/null' y lanzamos Vite.
-# Usamos un 'exec' simple, y luego otro 'exec' para el comando principal,
-# para evitar el 'restart' y el 'sh -c'
-echo -e "${BLUE}▶️ Iniciando servidor de desarrollo Vite...${NC}"
-# Este comando hace dos cosas:
-# 1. Encuentra el PID del proceso 'tail' (el que lo mantenía vivo)
-# 2. Lo mata, lo que hace que el command original del docker-compose muera.
-docker-compose exec frontend sh -c "pkill tail"
-
-echo -e "${GREEN}✨ ¡Setup completo, tete! ¡A darle caña!${NC}"
-echo -e "${GREEN}🌍 Backend (API) listo en http://localhost:8000 ${NC}"
-echo -e "${GREEN}⚛️  Frontend (React) listo en http://localhost:5173 ${NC}"
+echo -e "${GREEN}✨ ¡Setup completo, tete! El entorno está listo para ejecución.${NC}"
+echo -e "${BLUE}👉 Ahora, arranca la aplicación con: docker compose up -d${NC}"
