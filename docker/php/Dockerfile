@@ -20,7 +20,12 @@ RUN if [ ${UID:-0} -ne 0 ] && [ ${GID:-0} -ne 0 ]; then \
     groupmod -g ${GID} www-data; \
 fi
 
+COPY entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
+
 WORKDIR /var/www/html
 RUN chown -R www-data:www-data /var/www/html
 
 USER www-data
+
+ENTRYPOINT ["/entrypoint.sh"]
