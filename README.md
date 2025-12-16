@@ -124,9 +124,9 @@ docker compose exec backend php artisan migrate
 http://localhost:5173
 
 ### API Backend:
-http://localhost/api/notes
+http://localhost:5173/api/notes
 
-http://localhost/api/health
+http://localhost:5173/api/health
 
 ## 🧪 Tests
 ### Frontend:
