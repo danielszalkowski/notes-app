@@ -148,3 +148,12 @@ docker compose exec backend php artisan test
 ```bash
 docker compose up
 ```
+o para que se ejecute en segundo plano:
+```bash
+docker compose up -d
+```
+y para apagar (si se ejecuta en segundo plano):
+```bash
+docker compose down
+```
+
