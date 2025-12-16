@@ -152,8 +152,8 @@ o para que se ejecute en segundo plano:
 ```bash
 docker compose up -d
 ```
-y para apagar (si se ejecuta en segundo plano):
+y para parar (si se ejecuta en segundo plano):
 ```bash
-docker compose down
+docker compose stop
 ```
 
