@@ -13,7 +13,7 @@ services:
     image: nginx:alpine
     container_name: notes-nginx
     ports:
-      - "80"
+      - "8000:80"
     volumes:
       - ./backend:/var/www/html
       - ./docker/nginx:/etc/nginx/conf.d

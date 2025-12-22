@@ -1,7 +1,7 @@
 import { render, screen, waitFor } from '@testing-library/react'
 import NotesList from '../components/NotesList'
 import { BrowserRouter } from 'react-router-dom'
-import axios from 'axios'
+import axios from '../lib/axios'
 import { vi } from 'vitest'
 
 vi.mock('axios')

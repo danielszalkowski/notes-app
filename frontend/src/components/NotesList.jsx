@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import axios from '../lib/axios';
 import { Link, useNavigate } from 'react-router-dom';
 
 const NotesList = () => {
@@ -15,6 +15,17 @@ const NotesList = () => {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
     const navigate = useNavigate();
+
+    // Lógica para cerrar sesión
+    const handleLogout = async () => {
+        try {
+            await axios.post('/logout');
+            navigate('/login');
+        } catch (err) {
+            console.error('Error al cerrar sesión', err);
+            navigate('/login');
+        }
+    };
 
     const fetchNotes = async (page = 1, query = '') => {
         setLoading(true);
@@ -71,6 +82,16 @@ const NotesList = () => {
 
     return (
         <div>
+            {/* BOTÓN DE LOGOUT AÑADIDO ARRIBA */}
+            <div className="flex justify-end mb-4">
+                <button 
+                    onClick={handleLogout}
+                    className="bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-3 rounded text-sm transition duration-150"
+                >
+                    Cerrar Sesión
+                </button>
+            </div>
+
             <div className="flex justify-between items-center mb-6">
                 {}
                 <Link to="/new" className="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded shadow transition duration-150">

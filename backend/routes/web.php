@@ -1,13 +1,9 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use Illuminate\Support\Facades\DB;
 
-Route::get('/health', function () {
-    try {
-        DB::connection()->getPdo();
-        return response()->json(['db' => 'ok']);
-    } catch (\Exception $e) {
-        return response()->json(['db' => 'error'], 500);
-    }
+Route::get('/', function () {
+    return ['Laravel' => app()->version()];
 });
+
+require __DIR__.'/auth.php';
