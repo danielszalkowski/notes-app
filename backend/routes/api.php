@@ -1,5 +1,6 @@
 <?php
 
+use App\CRM\Properties\Controllers\AvailablePropertiesController;
 use App\Http\Controllers\Api\NoteController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -15,4 +16,10 @@ Route::middleware(['auth:sanctum'])->group(function () {
     });
 
     Route::get('/notes', [NoteController::class, 'index']);
+
+    Route::get(
+        '/properties/available-for-operations',
+        [AvailablePropertiesController::class, 'index']
+    )
+        ->middleware('auth:sanctum');
 });
